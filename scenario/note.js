@@ -1,55 +1,49 @@
-import Parameter from './parameter.js';
+import Controller from './controller.js';
+import Chord from './chord.js';
 
-export default class Note extends Set {
+export default class Note extends Controller {
+
+$chord = new Chord;
 
 constructor ( details ) {
 
-super ( typeof details ?.parameters === 'object' ? Object .keys ( details .parameters ) : undefined );
+super ( details );
 
-this .details = details;
 this .number = details .number;
 this .instance = details .instance = ++details .instance % 10 === 0 ? ++details .instance : details .instance;
-
-for ( const parameter of [ ... this ] )
-this [ '$' + parameter ] = new Parameter ( { value: details .parameters [ parameter ] } );
 
 };
 
 $number () { return [ this .number, this .instance ] .join ( '.' ) };
 
-async $_director ( { play: $ }, ... argv ) {
+async $_director ( _, ... argv ) {
+
+const { play: $ } = _;
 
 if ( ! argv .length )
-return [ ... this ] .map (
+return super .$_director ( _ );
 
-parameter => [ parameter, this [ '$' + parameter ] .value ] .join ( ' = ' )
+const step = argv .shift () || '0';
+const length = argv .shift () || '1';
+const chord = await $ ( 'chord', 'notes' );
+const delay = await $ ( 'chord', 'delay' );
 
-);
+let note = [];
 
-const note = [
+note .push ( `{ ${ chord } chord` );
+note .push ( [
 
 `i ${ await $ ( 'number' ) }`,
-`[${ argv .shift () || '0' }]`,
-`[${ argv .shift () || '1/4' }]`,
+`[$measure * (${ step } + $chord * (${ delay }) )]`,
+`[${ length }]`,
 ... await $ ( 'parameters' )
 
-] .join ( ' ' );
+] .join ( ' ' ) );
+note .push ( '}' );
 
-this .details .score .push ( note );
+this .details .score .push ( note = note .join ( '\n' ) );
 
 return note;
-
-};
-
-$parameters ( { play: $ } ) {
-
-return Promise .all ( [ ... this ] .map ( async parameter => {
-
-const value = await $ ( parameter );
-
-return isNaN ( `${ value }` [ 0 ] ) ? `"${ value }"` : `[${ value }]`
-
-} ) );
 
 };
 

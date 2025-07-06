@@ -75,14 +75,12 @@ ${ players .map (
 
 i_ readscore {{
 
-#define measure #[${ clock .measure } * 60 / ${ clock .tempo }]#
+#define measure #${ clock .measure } * 60 / ${ clock .tempo }#
 #define key #${ percussionist .key }#
 
-i "clock" 0 0 $measure
+i "clock" 0 0 [$measure]
 
 i "recorder" 0 -1
-
-v $measure
 
 ${ score .join ( '\n' ) }
 
