@@ -94,7 +94,7 @@ ${ score .join ( '\n' ) }
 
 writeFile ( '.take', take .toString (), 'utf8' );
 
-this .engine = spawn ( 'csound', [ path ], { /* stdio: 'inherit' */ } );
+this .engine = spawn ( 'csound', [ path ], { stdio: 'ignore' } );
 
 _ .interrupt .then (
 
