@@ -28,13 +28,11 @@ async parameter => [ parameter, await $ ( parameter ) ] .join ( ' = ' )
 
 $parameters ( { play: $ } ) {
 
-return Promise .all ( [ ... this ] .map ( async parameter => {
+return Promise .all ( [ ... this ] .map (
 
-const value = await $ ( parameter );
+parameter => $ ( parameter, Symbol .for ( 'wrapped' ) )
 
-return isNaN ( `${ value }` [ 0 ] ) ? `"${ value }"` : `[${ value }]`
-
-} ) );
+) );
 
 };
 

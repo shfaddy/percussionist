@@ -45,6 +45,8 @@ nchnls = 1
 
 #define directory #${ new URL ( import .meta .url ) .pathname .split ( '/' ) .slice ( 0, -1 ) .join ( '/' ) }#
 
+giKey init ${ await _ .play ( Symbol .for ( 'senior' ), 'key' ) }
+
 alwayson "recorder"
 
 gaNote init 0

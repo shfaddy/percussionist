@@ -4,20 +4,20 @@ export default class Tabla extends Player {
 
 parameters = {
 
-attack: '1/32',
-decay: '1/8',
-sustain: '1/4',
-release: '1/2',
+key: '0',
+highKey: '12*2',
+detune: '0',
+shift: '12*4',
 
-low: 5,
-lowSub: 1,
+attack: '1/2^5',
+decay: '1/2^3',
+sustain: '1/2^2',
+release: '1/2^1',
 
-high: 8,
-highSub: '1/8',
-
-gogobell: '1/4',
-
-snatch: '1/4'
+lowSub: '1/2^0',
+highSub: '1/2^3',
+gogobell: '1/2^2',
+snatch: '1/2^2'
 
 };
 
@@ -30,7 +30,8 @@ giVibratoFT ftgen 0, 0, 128, 10, 1
 
 body = `
 
-iPitch random 0, 1
+iPKey += giKey + iPDetune
+iPHighKey += iPKey
 
 iPAttack *= p3
 iPDecay *= p3
@@ -40,26 +41,29 @@ p3 init iPAttack + iPDecay + iPRelease
 
 aNote = 0
 
-aLowSubAmplitude linseg 0, iPAttack, 1, iPDecay, .25, iPRelease, 0
-aLowSubFrequency linseg cpsoct ( iPHigh + iPitch ), iPAttack, cpsoct ( iPLow + iPitch )
+aLowSubAmplitude linseg 0, iPAttack, 1, iPDecay, iPSustain, iPRelease, 0
+
+aLowSubFrequency linseg cpsmidinn ( iPKey + iPShift ), iPAttack, cpsmidinn ( iPKey )
 
 aLowSub poscil aLowSubAmplitude, aLowSubFrequency
 
 aNote += aLowSub * iPLowSub
 
 aHighSubAmplitude linseg 0, iPAttack/8, 1, iPDecay/8, iPSustain, iPRelease/8, 0
-aHighSubFrequency linseg cpsoct ( iPHigh + 2 + iPitch ), iPAttack/2, cpsoct ( iPLow + 2 + iPitch )
+
+aHighSubFrequency linseg cpsmidinn( iPHighKey + iPShift ), iPAttack/2, cpsmidinn ( iPHighKey )
 
 aHighSub poscil aHighSubAmplitude, aHighSubFrequency
 
 aNote += aHighSub * iPHighSub
 
-aGogobell gogobel 1, cpsoct ( iPLow + iPitch ), .5, .5, giStrikeFT, 6.0, 0.3, giVibratoFT
+aGogobell gogobel 1, cpsmidinn ( iPKey ), .5, .5, giStrikeFT, 6.0, 0.3, giVibratoFT
 
 aNote += aGogobell * iPGogobell
 
 aSnatchAmplitude linseg 0, iPAttack/8, 1, iPDecay/8, 0
-aSnatchFrequency linseg cpsoct ( iPHigh + 2 + iPitch ), iPAttack/2, cpsoct ( iPHigh + iPitch )
+
+aSnatchFrequency linseg cpsmidinn ( iPHighKey + iPShift ), iPAttack/2, cpsmidinn ( iPKey + iPShift )
 
 aSnatch noise aSnatchAmplitude, 0
 aSnatch butterlp aSnatch, aSnatchFrequency

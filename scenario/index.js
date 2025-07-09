@@ -1,13 +1,11 @@
-import Device from './device.js';
 import Clock from './clock.js';
 import Recorder from './recorder.js';
 import Tabla from './tabla.js';
+import Parameter from './parameter.js';
 
-export default class Percussionist extends Device {
+export default class Percussionist {
 
 constructor ( details = {} ) {
-
-super ();
 
 this .details = Object .assign ( details, {
 
@@ -32,8 +30,6 @@ return ! argv .length ? this .title : this .title = argv .join ( '-' );
 
 };
 
-key = 64;
-
-$key ( _, ... argv ) { return _ .play ( _, Symbol .for ( 'parameter' ), 'key', ... argv ) };
+$key = new Parameter ( { value: 60 } );
 
 };
