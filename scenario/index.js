@@ -1,5 +1,5 @@
 import Clock from './clock.js';
-import Recorder from './recorder.js';
+import Engine from './engine.js';
 import Tabla from './tabla.js';
 import Parameter from './parameter.js';
 
@@ -18,7 +18,7 @@ score: []
 this .$clock = new Clock ( details );
 this .$tabla = new Tabla ( details );
 this .$t2 = new Tabla ( details );
-this .$record = new Recorder ( details );
+this .$record = new Engine ( details );
 
 };
 
